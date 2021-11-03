@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormEventArgs.cs" />
     <Compile Include="MainPresenter.cs" />
     <Compile Include="MessageService.cs" />
     <Compile Include="MainForm.cs">

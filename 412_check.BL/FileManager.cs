@@ -1,15 +1,13 @@
-﻿using System.IO;
+﻿using System.Data;
+using System.IO;
 using System.Text;
+using ExcelDataReader;
 
 namespace _412_check.BL
 {
     public interface IFileManager
     {
-        string GetContent(string filePath);
-        string GetContent(string filePath, Encoding encoding);
-        void SaveContent(string content, string filepath);
-        void SaveContent(string content, string filepath, Encoding encoding);
-        int GetSymbolCount(string content);
+        DataTableCollection GetContent(string filePath);
         bool IsExist(string filePath);
     }
     public class FileManager:IFileManager
@@ -20,27 +18,21 @@ namespace _412_check.BL
             bool isExist = File.Exists(filePath);
             return isExist;
         }
-        public string GetContent(string filePath)
+        
+        public DataTableCollection GetContent(string filePath)
         {
-            return GetContent(filePath, _defaultencoding);
-        }
-        public string GetContent(string filePath, Encoding encoding)
-        {
-            string content = File.ReadAllText(filePath, encoding);
-            return content;
-        }
-        public void SaveContent(string content, string filepath)
-        {
-            SaveContent(content, filepath, _defaultencoding);
-        }
-        public void SaveContent(string content, string filepath, Encoding encoding)
-        {
-            File.WriteAllText(filepath, content, encoding);
-        }
-        public int GetSymbolCount(string content)
-        {
-            int count = content.Length;
-            return count;
+            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    DataSet result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = true }
+                    });
+                    DataTableCollection tableCollection = result.Tables;
+                    return tableCollection;
+                }
+            }
         }
     }
 }

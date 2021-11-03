@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using _412_check.BL;
 using _412.Messages;
 
@@ -10,32 +11,37 @@ namespace _412_check
         private readonly IFileManager _manager;
         private readonly IMessageService _messageService;
         public string _currentFilePath;
+        private DataTableCollection XlsSheetsCollection;
 
         public MainPresenter(IMainForm view, IFileManager manager, IMessageService service)
         {
             _view = view;
             _manager = manager;
             _messageService = service;
-
-            _view.SetSymbolCount(0);
-            _view.ContentChanged += _view_ContentChanged;
             _view.FileOpenClick += _view_FileOpenClick;
-            _view.FileSaveClick += _view_FileSaveClick;
+            _view.CboSheetSelectedIndexChanged += _view_CboSheetSelectedIndexChanged; ;
+            //_view.FileSaveClick += _view_FileSaveClick;
         }
 
-        private void _view_FileSaveClick(object sender, EventArgs e)
+        private void _view_CboSheetSelectedIndexChanged(object sender, FormEventArgs e)
         {
-            try
-            {
-                string content = _view.Content;
-                _manager.SaveContent(content, _currentFilePath);
-                _messageService.ShowMessage("Файл успешно сохранен");
-            }
-            catch (Exception ex)
-            {
-                _messageService.ShowError(ex.Message);
-            }
+            DataTable xlsSheet = XlsSheetsCollection[e.msg];
+            _view.ExcelTable = xlsSheet;
         }
+
+        //private void _view_FileSaveClick(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        string content = _view.Content;
+        //        _manager.SaveContent(content, _currentFilePath);
+        //        _messageService.ShowMessage("Файл успешно сохранен");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _messageService.ShowError(ex.Message);
+        //    }
+        //}
 
         private void _view_FileOpenClick(object sender, EventArgs e)
         {
@@ -48,26 +54,14 @@ namespace _412_check
                     _messageService.ShowExclmation("Выбранный файл не существует");
                     return;
                 }
-
                 _currentFilePath = filePath;
-
-                string content = _manager.GetContent(filePath);
-                int count = _manager.GetSymbolCount(content);
-
-                _view.Content = content;
-                _view.SetSymbolCount(count);
+                XlsSheetsCollection = _manager.GetContent(filePath);
+                _view.SetSheetList(XlsSheetsCollection);
             }
             catch (Exception ex)
             {
                 _messageService.ShowError(ex.Message);
             }
-        }
-
-        private void _view_ContentChanged(object sender, EventArgs e)
-        {
-            string content = _view.Content;
-            int count = _manager.GetSymbolCount(content);
-            _view.SetSymbolCount(count);
         }
     }
 }

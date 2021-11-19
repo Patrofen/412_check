@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Data;
 using _412_check.BL;
 using _412.Messages;
@@ -8,24 +9,53 @@ namespace _412_check
     class MainPresenter
     {
         private readonly IMainForm _view;
-        private readonly IFileManager _manager;
+        private readonly IModel _model;
         private readonly IMessageService _messageService;
-        public string _currentFilePath;
-        private DataTableCollection XlsSheetsCollection;
+        private DataTableCollection xlsSheetsCollection;
+        private DataTable currencies;
 
-        public MainPresenter(IMainForm view, IFileManager manager, IMessageService service)
+        public MainPresenter(IMainForm view, IModel model, IMessageService service)
         {
             _view = view;
-            _manager = manager;
+            _model = model;
             _messageService = service;
             _view.FileOpenClick += _view_FileOpenClick;
-            _view.CboSheetSelectedIndexChanged += _view_CboSheetSelectedIndexChanged; ;
+            _view.LoadTemplatesClick += _view_LoadTemplatesClick;
+            _view.CboSheetSelectedIndexChanged += _view_CboSheetSelectedIndexChanged;
             //_view.FileSaveClick += _view_FileSaveClick;
+            LoadDirectories();
+        }
+
+        private void LoadDirectories()
+        {
+            FileInfo xlFile_currencies = Utils.GetFileInfo("Справочники", "Код_валюты.xlsx");
+            currencies = OpenXlFile(xlFile_currencies.FullName);
+
+        }
+
+        private DataTable OpenXlFile(string filePath)
+        {
+            try
+            {
+                bool isExist = _model.IsExist(filePath);
+                if (!isExist)
+                {
+                    _messageService.ShowExclmation("Выбранный файл не существует");
+                }
+                xlsSheetsCollection = _model.GetContent(filePath);
+                DataTable result = xlsSheetsCollection[0];
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _messageService.ShowError(ex.Message);
+                return null;
+            }
         }
 
         private void _view_CboSheetSelectedIndexChanged(object sender, FormEventArgs e)
         {
-            DataTable xlsSheet = XlsSheetsCollection[e.msg];
+            DataTable xlsSheet = xlsSheetsCollection[e.msg];
             _view.ExcelTable = xlsSheet;
         }
 
@@ -43,20 +73,15 @@ namespace _412_check
         //    }
         //}
 
-        private void _view_FileOpenClick(object sender, EventArgs e)
+        private void _view_FileOpenClick(object sender, FormEventArgs e)
+        {
+            _view.ExcelTable = OpenXlFile(e.msg);
+        }
+        private void _view_LoadTemplatesClick(object sender, EventArgs e)
         {
             try
             {
-                string filePath = _view.FilePath;
-                bool isExist = _manager.IsExist(filePath);
-                if (!isExist)
-                {
-                    _messageService.ShowExclmation("Выбранный файл не существует");
-                    return;
-                }
-                _currentFilePath = filePath;
-                XlsSheetsCollection = _manager.GetContent(filePath);
-                _view.SetSheetList(XlsSheetsCollection);
+                _model.LoadTemplate("Дебиторская_задолженность.xlsx", "Debitors_all.xlsx", "дебиторская задолженность");
             }
             catch (Exception ex)
             {

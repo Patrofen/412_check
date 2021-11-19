@@ -19,7 +19,9 @@ namespace _412_check
         string FilePath { get; }
         object ExcelTable { get; set; }
         void SetSheetList(DataTableCollection dataTableCollection);
-        event EventHandler FileOpenClick;
+        //event EventHandler FileOpenClick;
+        event FormEventHandler FileOpenClick;
+        event EventHandler LoadTemplatesClick;
         //event EventHandler FileSaveClick;
         event FormEventHandler CboSheetSelectedIndexChanged;
     }
@@ -37,16 +39,19 @@ namespace _412_check
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 fldFilePath.Text = dlg.FileName;
-                if (FileOpenClick != null) FileOpenClick(this, EventArgs.Empty);
+                FormEventArgs FilePath = new FormEventArgs(dlg.FileName.ToString());
+                if (FileOpenClick != null) FileOpenClick(this, FilePath);
             }
         }
+        private void btnLoadTemplates_Click(object sender, EventArgs e)
+        {
+            if (LoadTemplatesClick != null) LoadTemplatesClick(this, EventArgs.Empty);
+        }
+
+
         //private void butSave_Click(object sender, EventArgs e)
         //{
         //    if (FileSaveClick != null) FileSaveClick(this, EventArgs.Empty);
-        //}
-        //private void fldContent_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (ContentChanged != null) ContentChanged(this, EventArgs.Empty);
         //}
         private void CboSheet_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -82,7 +87,8 @@ namespace _412_check
             get { return dataGridView1.DataSource; }
             set { dataGridView1.DataSource = value; }
         }
-        public event EventHandler FileOpenClick;
+        public event FormEventHandler FileOpenClick;
+        public event EventHandler LoadTemplatesClick;
         //public event EventHandler FileSaveClick;
         public event FormEventHandler CboSheetSelectedIndexChanged;
         #endregion
@@ -96,6 +102,8 @@ namespace _412_check
             }
             cboSheet.SelectedItem = cboSheet?.Items[0];
         }
+
+        
 
         //private void BtnBrowse_Click(object sender, EventArgs e)
         //{

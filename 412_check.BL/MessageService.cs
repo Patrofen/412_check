@@ -8,7 +8,7 @@ namespace _412.Messages
         void ShowExclmation(string exclamation);
         void ShowError(string error);
     }
-    class MessageService : IMessageService
+    public class MessageService : IMessageService
     {
         public void ShowMessage(string message)
         {

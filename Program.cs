@@ -20,14 +20,12 @@ namespace _412_check
             Application.SetCompatibleTextRenderingDefault(false);
 
             MainForm form = new MainForm();
-            FileManager manager = new FileManager();
+            Model model = new Model();
             MessageService service = new MessageService();
 
-            MainPresenter presenter = new MainPresenter(form, manager, service);
+            MainPresenter presenter = new MainPresenter(form, model, service);
             
             Application.Run(form);
-
-
         }
 
         

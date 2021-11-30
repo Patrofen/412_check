@@ -1,14 +1,7 @@
-﻿using ExcelDataReader;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace _412_check
 {
@@ -16,121 +9,142 @@ namespace _412_check
 
     public interface IMainForm
     {
-        string FilePath { get; }
-        object ExcelTable { get; set; }
-        void SetSheetList(DataTableCollection dataTableCollection);
-        //event EventHandler FileOpenClick;
-        event FormEventHandler FileOpenClick;
+        DateTime ReportDate { get; set; }
+        object DataGridView { get; set; }
+        string TotalDebitorsLines { set; }
+        string TotalDebitorsErrors { set; }
+        string TotalRepoLines { set; }
+        string TotalRepoErrors { set; }
+        string TotalCurrRatesLines { set; }
+        string TotalCurrRatesErrors { set; }
+
+
         event EventHandler LoadTemplatesClick;
-        //event EventHandler FileSaveClick;
-        event FormEventHandler CboSheetSelectedIndexChanged;
+        event EventHandler OpenDebitorsTmplateClick;
+        event EventHandler OpenRevRepoTmplateClick;
+        event EventHandler OpenCurrRatesTmplateClick;
+        event FormEventHandler CboGridViewChanged;
     }
     public partial class MainForm : Form, IMainForm
     {
+        //Конструктор
         public MainForm()
         {
             InitializeComponent();
         }
+
         #region Проброс событий
-        private void butSelectFile_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Excel Workbook|*.xlsx|Excel 97-2003 Workbook|*.xls";
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                fldFilePath.Text = dlg.FileName;
-                FormEventArgs FilePath = new FormEventArgs(dlg.FileName.ToString());
-                if (FileOpenClick != null) FileOpenClick(this, FilePath);
-            }
-        }
         private void btnLoadTemplates_Click(object sender, EventArgs e)
         {
             if (LoadTemplatesClick != null) LoadTemplatesClick(this, EventArgs.Empty);
         }
-
-
-        //private void butSave_Click(object sender, EventArgs e)
-        //{
-        //    if (FileSaveClick != null) FileSaveClick(this, EventArgs.Empty);
-        //}
-        private void CboSheet_SelectedIndexChanged(object sender, EventArgs e)
+        private void btnOpenDebTmpl_Click(object sender, EventArgs e)
         {
-            FormEventArgs SheetName = new FormEventArgs(cboSheet.SelectedItem.ToString());
-            if (CboSheetSelectedIndexChanged != null) CboSheetSelectedIndexChanged(this, SheetName);
-
-            //        DataTable dt = tableCollection[cboSheet.SelectedItem.ToString()];
-
-            ////EnumerableRowCollection<DataRow> query =
-            ////    from line in dt.AsEnumerable()
-            ////    where line.Field<string>("Текст") == "Три"
-            ////    orderby line.Field<int>("Номер")
-            ////    select line;
-            ////DataView view = query.AsDataView();
-
-            ////DataView view = dt.AsDataView();
-            ////dataGridView1.DataSource = view;
-
-            //dataGridView1.DataSource = dt;
-
-            ////изменить цвет ячейки
-            //dataGridView1.Rows[0].Cells[0].Style.BackColor = Color.Red;
+            if (OpenDebitorsTmplateClick != null) OpenDebitorsTmplateClick(this, EventArgs.Empty);
+        }
+        private void btnOpenRepoTmpl_Click(object sender, EventArgs e)
+        {
+            if (OpenRevRepoTmplateClick != null) OpenRevRepoTmplateClick(this, EventArgs.Empty);
+        }
+        private void btnOpenCurrRatesTmpl_Click(object sender, EventArgs e)
+        {
+            if (OpenCurrRatesTmplateClick != null) OpenCurrRatesTmplateClick(this, EventArgs.Empty);
+        }
+        private void cboGridViewSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string message = cboGridViewSelect.SelectedItem.ToString();
+            if (CboGridViewChanged != null) CboGridViewChanged(this, new FormEventArgs(message));
         }
         #endregion
 
         #region Реализация IMainForm
-        public string FilePath
+        private DateTime reportDate;
+        public DateTime ReportDate
         {
-            get { return fldFilePath.Text; }
+            get { return reportDate; }
+            set { reportDate = value; }
         }
-        public object ExcelTable
+        //Вывод в dataGridView информации из файла Excel
+        public object DataGridView
         {
             get { return dataGridView1.DataSource; }
             set { dataGridView1.DataSource = value; }
         }
-        public event FormEventHandler FileOpenClick;
-        public event EventHandler LoadTemplatesClick;
-        //public event EventHandler FileSaveClick;
-        public event FormEventHandler CboSheetSelectedIndexChanged;
-        #endregion
-
-        public void SetSheetList(DataTableCollection SheetsCollection)
+        //Количество строк Дебиторской задолженности
+        public string TotalDebitorsLines
         {
-            cboSheet.Items.Clear();
-            foreach (DataTable table in SheetsCollection)
-            {
-                cboSheet.Items.Add(table.TableName); //add sheet to combobox
-            }
-            cboSheet.SelectedItem = cboSheet?.Items[0];
+            set { lblDebitorsLines.Text = value; }
+        }
+        //Количество ошибок загрузки Дебиторской задолженности
+        public string TotalDebitorsErrors
+        {
+            set { lblDebitorsErrors.Text = value; }
+        }
+        //Количество строк Обратного РЕПО
+        public string TotalRepoLines
+        {
+            set { lblRepoLines.Text = value; }
+        }
+        //Количество ошибок загрузки Обратного РЕПО
+        public string TotalRepoErrors
+        {
+            set { lblRepoErrors.Text = value; }
+        }
+        //Количество строк Курсов валют
+        public string TotalCurrRatesLines
+        {
+            set { lblCurrRatesLines.Text = value; }
+        }
+        //Количество ошибок загрузки Курсов валют
+        public string TotalCurrRatesErrors
+        {
+            set { lblCurrRatesErrors.Text = value; }
         }
 
-        
 
-        //private void BtnBrowse_Click(object sender, EventArgs e)
-        //{
-        //    using(OpenFileDialog openFileDialog = new OpenFileDialog() {Filter= "Excel Workbook|*.xlsx|Excel 97-2003 Workbook|*.xls" })
-        //    {
-        //        if (openFileDialog.ShowDialog() == DialogResult.OK)
-        //        {
-        //            fldFilePath.Text = openFileDialog.FileName;
-        //            using(var stream = File.Open(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-        //            {
-        //                using(IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
-        //                {
-        //                    DataSet result = reader.AsDataSet(new ExcelDataSetConfiguration() 
-        //                    {
-        //                        ConfigureDataTable=(_)=> new ExcelDataTableConfiguration() { UseHeaderRow=true}
-        //                    });
-        //                    tableCollection = result.Tables;
-        //                    cboSheet.Items.Clear();
-        //                    foreach (DataTable table in tableCollection)
-        //                    {
-        //                        cboSheet.Items.Add(table.TableName); //add sheet to combobox
-        //                        cboSheet.SelectedItem = cboSheet.Items[0];
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        public event EventHandler LoadTemplatesClick;
+        public event EventHandler OpenDebitorsTmplateClick;
+        public event EventHandler OpenRevRepoTmplateClick;
+        public event EventHandler OpenCurrRatesTmplateClick;
+        public event FormEventHandler CboGridViewChanged;
+        #endregion
+
+        #region Календарь
+        private void monthCalendar1_DateSelected(object sender, DateRangeEventArgs e)
+        {
+            ReportDate = e.Start;
+            lblReportDate.Text = ReportDate.ToShortDateString();
+            lblReportDate.ForeColor = Color.Black;
+            monthCalendar1.Visible = false;
+            CheckLoadPermissions();
+        }
+        private void btnReportDate_MouseClick(object sender, MouseEventArgs e)
+        {
+            monthCalendar1.Visible = true;
+        }
+        #endregion
+
+        #region Установка разрешения на загрузку данных через CheckBoxes
+        private void chkFXrates_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckLoadPermissions();
+        }
+        private void chkREPO_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckLoadPermissions();
+        }
+        private void chkDebitors_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckLoadPermissions();
+        }
+        private void CheckLoadPermissions()
+        {
+            if (chkFXrates.Checked && chkDebitors.Checked && chkREPO.Checked && (lblReportDate.Text != "дата не установлена"))
+            {
+                btnLoadTemplates.Enabled = true;
+            }
+            else btnLoadTemplates.Enabled = false;
+        }
+        #endregion
     }
 }

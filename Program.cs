@@ -20,10 +20,10 @@ namespace _412_check
             Application.SetCompatibleTextRenderingDefault(false);
 
             MainForm form = new MainForm();
-            Model model = new Model();
+            BusinessLogic bsnsLogic = new BusinessLogic();
             MessageService service = new MessageService();
 
-            MainPresenter presenter = new MainPresenter(form, model, service);
+            MainPresenter presenter = new MainPresenter(form, bsnsLogic, service);
             
             Application.Run(form);
         }

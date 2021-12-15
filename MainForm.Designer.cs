@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.btnLoadTemplates = new System.Windows.Forms.Button();
@@ -57,6 +58,8 @@
             this.chkDebitors = new System.Windows.Forms.CheckBox();
             this.chkREPO = new System.Windows.Forms.CheckBox();
             this.chkFXrates = new System.Windows.Forms.CheckBox();
+            this.btnCalculate = new System.Windows.Forms.Button();
+            this.btnCheck = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBoxDebitors.SuspendLayout();
             this.groupBoxRevRepo.SuspendLayout();
@@ -70,29 +73,39 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.Location = new System.Drawing.Point(374, 43);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(859, 408);
+            this.dataGridView1.Size = new System.Drawing.Size(1025, 560);
             this.dataGridView1.TabIndex = 0;
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 496);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 648);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1245, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1411, 22);
             this.statusStrip1.TabIndex = 11;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // btnLoadTemplates
             // 
-            this.btnLoadTemplates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLoadTemplates.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnLoadTemplates.Enabled = false;
-            this.btnLoadTemplates.Location = new System.Drawing.Point(12, 227);
+            this.btnLoadTemplates.Location = new System.Drawing.Point(12, 303);
             this.btnLoadTemplates.Name = "btnLoadTemplates";
-            this.btnLoadTemplates.Size = new System.Drawing.Size(96, 23);
+            this.btnLoadTemplates.Size = new System.Drawing.Size(122, 23);
             this.btnLoadTemplates.TabIndex = 12;
-            this.btnLoadTemplates.Text = "Load templates";
+            this.btnLoadTemplates.Text = "Загрузить данные";
             this.btnLoadTemplates.UseVisualStyleBackColor = true;
             this.btnLoadTemplates.Click += new System.EventHandler(this.btnLoadTemplates_Click);
             // 
@@ -260,14 +273,14 @@
             // 
             this.cboGridViewSelect.FormattingEnabled = true;
             this.cboGridViewSelect.Items.AddRange(new object[] {
-            "Проверка формы",
+            "Раздел 1 детализированный",
+            "Раздел 1 сгруппированный",
             "Дебиторы",
-            "Кредиторы",
             "РЕПО",
             "Курсы валют"});
             this.cboGridViewSelect.Location = new System.Drawing.Point(374, 12);
             this.cboGridViewSelect.Name = "cboGridViewSelect";
-            this.cboGridViewSelect.Size = new System.Drawing.Size(153, 21);
+            this.cboGridViewSelect.Size = new System.Drawing.Size(172, 21);
             this.cboGridViewSelect.TabIndex = 18;
             this.cboGridViewSelect.SelectedIndexChanged += new System.EventHandler(this.cboGridViewSelect_SelectedIndexChanged);
             // 
@@ -362,11 +375,37 @@
             this.chkFXrates.UseVisualStyleBackColor = true;
             this.chkFXrates.CheckedChanged += new System.EventHandler(this.chkFXrates_CheckedChanged);
             // 
+            // btnCalculate
+            // 
+            this.btnCalculate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnCalculate.Enabled = false;
+            this.btnCalculate.Location = new System.Drawing.Point(12, 332);
+            this.btnCalculate.Name = "btnCalculate";
+            this.btnCalculate.Size = new System.Drawing.Size(122, 23);
+            this.btnCalculate.TabIndex = 23;
+            this.btnCalculate.Text = "Расчитать значения";
+            this.btnCalculate.UseVisualStyleBackColor = true;
+            this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click);
+            // 
+            // btnCheck
+            // 
+            this.btnCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnCheck.Enabled = false;
+            this.btnCheck.Location = new System.Drawing.Point(12, 361);
+            this.btnCheck.Name = "btnCheck";
+            this.btnCheck.Size = new System.Drawing.Size(122, 23);
+            this.btnCheck.TabIndex = 24;
+            this.btnCheck.Text = "Проверить форму";
+            this.btnCheck.UseVisualStyleBackColor = true;
+            this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1245, 518);
+            this.ClientSize = new System.Drawing.Size(1411, 670);
+            this.Controls.Add(this.btnCheck);
+            this.Controls.Add(this.btnCalculate);
             this.Controls.Add(this.monthCalendar1);
             this.Controls.Add(this.chkFXrates);
             this.Controls.Add(this.chkREPO);
@@ -426,6 +465,8 @@
         private System.Windows.Forms.CheckBox chkDebitors;
         private System.Windows.Forms.CheckBox chkREPO;
         private System.Windows.Forms.CheckBox chkFXrates;
+        private System.Windows.Forms.Button btnCalculate;
+        private System.Windows.Forms.Button btnCheck;
     }
 }
 

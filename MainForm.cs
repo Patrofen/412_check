@@ -17,12 +17,15 @@ namespace _412_check
         string TotalRepoErrors { set; }
         string TotalCurrRatesLines { set; }
         string TotalCurrRatesErrors { set; }
+        string CboGridViewSelect { set; }
 
 
         event EventHandler LoadTemplatesClick;
         event EventHandler OpenDebitorsTmplateClick;
         event EventHandler OpenRevRepoTmplateClick;
         event EventHandler OpenCurrRatesTmplateClick;
+        event EventHandler CalculateClick;
+        event EventHandler CheckClick;
         event FormEventHandler CboGridViewChanged;
     }
     public partial class MainForm : Form, IMainForm
@@ -37,6 +40,7 @@ namespace _412_check
         private void btnLoadTemplates_Click(object sender, EventArgs e)
         {
             if (LoadTemplatesClick != null) LoadTemplatesClick(this, EventArgs.Empty);
+            btnCalculate.Enabled = true;
         }
         private void btnOpenDebTmpl_Click(object sender, EventArgs e)
         {
@@ -49,6 +53,15 @@ namespace _412_check
         private void btnOpenCurrRatesTmpl_Click(object sender, EventArgs e)
         {
             if (OpenCurrRatesTmplateClick != null) OpenCurrRatesTmplateClick(this, EventArgs.Empty);
+        }
+        private void btnCalculate_Click(object sender, EventArgs e)
+        {
+            if (CalculateClick != null) CalculateClick(this, EventArgs.Empty);
+            btnCheck.Enabled = true;
+        }
+        private void btnCheck_Click(object sender, EventArgs e)
+        {
+            if (CheckClick != null) CheckClick(this, EventArgs.Empty);
         }
         private void cboGridViewSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -100,12 +113,18 @@ namespace _412_check
         {
             set { lblCurrRatesErrors.Text = value; }
         }
+        public string CboGridViewSelect
+        {
+            set { cboGridViewSelect.SelectedItem = value; }
+        }
 
 
         public event EventHandler LoadTemplatesClick;
         public event EventHandler OpenDebitorsTmplateClick;
         public event EventHandler OpenRevRepoTmplateClick;
         public event EventHandler OpenCurrRatesTmplateClick;
+        public event EventHandler CalculateClick;
+        public event EventHandler CheckClick;
         public event FormEventHandler CboGridViewChanged;
         #endregion
 
@@ -145,6 +164,9 @@ namespace _412_check
             }
             else btnLoadTemplates.Enabled = false;
         }
+
         #endregion
+
+        
     }
 }

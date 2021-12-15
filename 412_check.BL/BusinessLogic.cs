@@ -99,6 +99,9 @@ namespace _412_check.BL
             {
                 case "debitorsSystem":
                 case "commonRepoSystem":
+                case "commonDebitSystem":
+                case "groupedDebitSystem":
+                case "debitSystem":
                     table.Reset();
                     table.Columns.Add("Идентификатор требования к дебитору", typeof(string));
                     table.Columns.Add("Наименование дебитора", typeof(string));

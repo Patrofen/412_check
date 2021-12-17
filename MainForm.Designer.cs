@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.btnLoadTemplates = new System.Windows.Forms.Button();
@@ -42,7 +42,7 @@
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             this.lblReportDate = new System.Windows.Forms.Label();
             this.btnReportDate = new System.Windows.Forms.Button();
-            this.groupBoxRevRepo = new System.Windows.Forms.GroupBox();
+            this.groupBoxRepo = new System.Windows.Forms.GroupBox();
             this.btnOpenRepoTmpl = new System.Windows.Forms.Button();
             this.lblRepoErrors = new System.Windows.Forms.Label();
             this.lblRepoLines = new System.Windows.Forms.Label();
@@ -58,12 +58,29 @@
             this.chkDebitors = new System.Windows.Forms.CheckBox();
             this.chkREPO = new System.Windows.Forms.CheckBox();
             this.chkFXrates = new System.Windows.Forms.CheckBox();
-            this.btnCalculate = new System.Windows.Forms.Button();
+            this.btnCalculate1sect = new System.Windows.Forms.Button();
             this.btnCheck = new System.Windows.Forms.Button();
+            this.groupBoxCreditors = new System.Windows.Forms.GroupBox();
+            this.lblCreditorsErrors = new System.Windows.Forms.Label();
+            this.btnOpenCredTmpl = new System.Windows.Forms.Button();
+            this.lblCreditorsLines = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.chkCreditors = new System.Windows.Forms.CheckBox();
+            this.chkShorts = new System.Windows.Forms.CheckBox();
+            this.groupBoxShorts = new System.Windows.Forms.GroupBox();
+            this.btnOpenShortsTempl = new System.Windows.Forms.Button();
+            this.lblShortsErrors = new System.Windows.Forms.Label();
+            this.lblShortsLines = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnCalculate2sect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBoxDebitors.SuspendLayout();
-            this.groupBoxRevRepo.SuspendLayout();
+            this.groupBoxRepo.SuspendLayout();
             this.groupBoxCurrRates.SuspendLayout();
+            this.groupBoxCreditors.SuspendLayout();
+            this.groupBoxShorts.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -73,16 +90,16 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.Format = "N2";
-            dataGridViewCellStyle1.NullValue = null;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = null;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.Location = new System.Drawing.Point(374, 43);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -101,7 +118,7 @@
             // 
             this.btnLoadTemplates.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnLoadTemplates.Enabled = false;
-            this.btnLoadTemplates.Location = new System.Drawing.Point(12, 303);
+            this.btnLoadTemplates.Location = new System.Drawing.Point(12, 358);
             this.btnLoadTemplates.Name = "btnLoadTemplates";
             this.btnLoadTemplates.Size = new System.Drawing.Size(122, 23);
             this.btnLoadTemplates.TabIndex = 12;
@@ -116,6 +133,7 @@
             this.groupBoxDebitors.Controls.Add(this.lblDebitorsLines);
             this.groupBoxDebitors.Controls.Add(this.label4);
             this.groupBoxDebitors.Controls.Add(this.label3);
+            this.groupBoxDebitors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBoxDebitors.Location = new System.Drawing.Point(12, 35);
             this.groupBoxDebitors.Name = "groupBoxDebitors";
             this.groupBoxDebitors.Size = new System.Drawing.Size(331, 58);
@@ -208,19 +226,19 @@
             this.btnReportDate.UseVisualStyleBackColor = true;
             this.btnReportDate.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnReportDate_MouseClick);
             // 
-            // groupBoxRevRepo
+            // groupBoxRepo
             // 
-            this.groupBoxRevRepo.Controls.Add(this.btnOpenRepoTmpl);
-            this.groupBoxRevRepo.Controls.Add(this.lblRepoErrors);
-            this.groupBoxRevRepo.Controls.Add(this.lblRepoLines);
-            this.groupBoxRevRepo.Controls.Add(this.label6);
-            this.groupBoxRevRepo.Controls.Add(this.label7);
-            this.groupBoxRevRepo.Location = new System.Drawing.Point(12, 99);
-            this.groupBoxRevRepo.Name = "groupBoxRevRepo";
-            this.groupBoxRevRepo.Size = new System.Drawing.Size(331, 58);
-            this.groupBoxRevRepo.TabIndex = 14;
-            this.groupBoxRevRepo.TabStop = false;
-            this.groupBoxRevRepo.Text = "РЕПО";
+            this.groupBoxRepo.Controls.Add(this.btnOpenRepoTmpl);
+            this.groupBoxRepo.Controls.Add(this.lblRepoErrors);
+            this.groupBoxRepo.Controls.Add(this.lblRepoLines);
+            this.groupBoxRepo.Controls.Add(this.label6);
+            this.groupBoxRepo.Controls.Add(this.label7);
+            this.groupBoxRepo.Location = new System.Drawing.Point(12, 227);
+            this.groupBoxRepo.Name = "groupBoxRepo";
+            this.groupBoxRepo.Size = new System.Drawing.Size(331, 58);
+            this.groupBoxRepo.TabIndex = 14;
+            this.groupBoxRepo.TabStop = false;
+            this.groupBoxRepo.Text = "РЕПО";
             // 
             // btnOpenRepoTmpl
             // 
@@ -273,9 +291,13 @@
             // 
             this.cboGridViewSelect.FormattingEnabled = true;
             this.cboGridViewSelect.Items.AddRange(new object[] {
-            "Раздел 1 детализированный",
             "Раздел 1 сгруппированный",
+            "Раздел 1 детализированный",
+            "Раздел 2 сгруппированный",
+            "Раздел 2 детализированный",
             "Дебиторы",
+            "Кредиторы",
+            "Короткие позиции",
             "РЕПО",
             "Курсы валют"});
             this.cboGridViewSelect.Location = new System.Drawing.Point(374, 12);
@@ -291,7 +313,7 @@
             this.groupBoxCurrRates.Controls.Add(this.lblCurrRatesLines);
             this.groupBoxCurrRates.Controls.Add(this.label8);
             this.groupBoxCurrRates.Controls.Add(this.label9);
-            this.groupBoxCurrRates.Location = new System.Drawing.Point(12, 163);
+            this.groupBoxCurrRates.Location = new System.Drawing.Point(12, 291);
             this.groupBoxCurrRates.Name = "groupBoxCurrRates";
             this.groupBoxCurrRates.Size = new System.Drawing.Size(331, 58);
             this.groupBoxCurrRates.TabIndex = 19;
@@ -358,7 +380,7 @@
             // chkREPO
             // 
             this.chkREPO.AutoSize = true;
-            this.chkREPO.Location = new System.Drawing.Point(349, 125);
+            this.chkREPO.Location = new System.Drawing.Point(349, 253);
             this.chkREPO.Name = "chkREPO";
             this.chkREPO.Size = new System.Drawing.Size(15, 14);
             this.chkREPO.TabIndex = 21;
@@ -368,51 +390,211 @@
             // chkFXrates
             // 
             this.chkFXrates.AutoSize = true;
-            this.chkFXrates.Location = new System.Drawing.Point(349, 189);
+            this.chkFXrates.Location = new System.Drawing.Point(349, 317);
             this.chkFXrates.Name = "chkFXrates";
             this.chkFXrates.Size = new System.Drawing.Size(15, 14);
             this.chkFXrates.TabIndex = 22;
             this.chkFXrates.UseVisualStyleBackColor = true;
             this.chkFXrates.CheckedChanged += new System.EventHandler(this.chkFXrates_CheckedChanged);
             // 
-            // btnCalculate
+            // btnCalculate1sect
             // 
-            this.btnCalculate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnCalculate.Enabled = false;
-            this.btnCalculate.Location = new System.Drawing.Point(12, 332);
-            this.btnCalculate.Name = "btnCalculate";
-            this.btnCalculate.Size = new System.Drawing.Size(122, 23);
-            this.btnCalculate.TabIndex = 23;
-            this.btnCalculate.Text = "Расчитать значения";
-            this.btnCalculate.UseVisualStyleBackColor = true;
-            this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click);
+            this.btnCalculate1sect.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnCalculate1sect.Enabled = false;
+            this.btnCalculate1sect.Location = new System.Drawing.Point(12, 387);
+            this.btnCalculate1sect.Name = "btnCalculate1sect";
+            this.btnCalculate1sect.Size = new System.Drawing.Size(122, 23);
+            this.btnCalculate1sect.TabIndex = 23;
+            this.btnCalculate1sect.Text = "Расчитать 1 раздел";
+            this.btnCalculate1sect.UseVisualStyleBackColor = true;
+            this.btnCalculate1sect.Click += new System.EventHandler(this.btnCalculate1sect_Click);
             // 
             // btnCheck
             // 
             this.btnCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnCheck.Enabled = false;
-            this.btnCheck.Location = new System.Drawing.Point(12, 361);
+            this.btnCheck.Location = new System.Drawing.Point(12, 445);
             this.btnCheck.Name = "btnCheck";
             this.btnCheck.Size = new System.Drawing.Size(122, 23);
             this.btnCheck.TabIndex = 24;
             this.btnCheck.Text = "Проверить форму";
             this.btnCheck.UseVisualStyleBackColor = true;
+            this.btnCheck.Visible = false;
             this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
+            // 
+            // groupBoxCreditors
+            // 
+            this.groupBoxCreditors.Controls.Add(this.lblCreditorsErrors);
+            this.groupBoxCreditors.Controls.Add(this.btnOpenCredTmpl);
+            this.groupBoxCreditors.Controls.Add(this.lblCreditorsLines);
+            this.groupBoxCreditors.Controls.Add(this.label10);
+            this.groupBoxCreditors.Controls.Add(this.label11);
+            this.groupBoxCreditors.Location = new System.Drawing.Point(12, 99);
+            this.groupBoxCreditors.Name = "groupBoxCreditors";
+            this.groupBoxCreditors.Size = new System.Drawing.Size(331, 58);
+            this.groupBoxCreditors.TabIndex = 19;
+            this.groupBoxCreditors.TabStop = false;
+            this.groupBoxCreditors.Text = "Кредиторы";
+            // 
+            // lblCreditorsErrors
+            // 
+            this.lblCreditorsErrors.AutoSize = true;
+            this.lblCreditorsErrors.Location = new System.Drawing.Point(183, 36);
+            this.lblCreditorsErrors.Name = "lblCreditorsErrors";
+            this.lblCreditorsErrors.Size = new System.Drawing.Size(76, 13);
+            this.lblCreditorsErrors.TabIndex = 3;
+            this.lblCreditorsErrors.Text = "не загружено";
+            // 
+            // btnOpenCredTmpl
+            // 
+            this.btnOpenCredTmpl.Image = global::_412_check.Properties.Resources.excel_32px_2;
+            this.btnOpenCredTmpl.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btnOpenCredTmpl.Location = new System.Drawing.Point(281, 12);
+            this.btnOpenCredTmpl.Name = "btnOpenCredTmpl";
+            this.btnOpenCredTmpl.Size = new System.Drawing.Size(40, 40);
+            this.btnOpenCredTmpl.TabIndex = 18;
+            this.btnOpenCredTmpl.UseVisualStyleBackColor = true;
+            this.btnOpenCredTmpl.Click += new System.EventHandler(this.btnOpenCredTmpl_Click);
+            // 
+            // lblCreditorsLines
+            // 
+            this.lblCreditorsLines.AutoSize = true;
+            this.lblCreditorsLines.Location = new System.Drawing.Point(183, 16);
+            this.lblCreditorsLines.Name = "lblCreditorsLines";
+            this.lblCreditorsLines.Size = new System.Drawing.Size(76, 13);
+            this.lblCreditorsLines.TabIndex = 2;
+            this.lblCreditorsLines.Text = "не загружено";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 36);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(159, 13);
+            this.label10.TabIndex = 1;
+            this.label10.Text = "Количество ошибок загрузки:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 16);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(171, 13);
+            this.label11.TabIndex = 0;
+            this.label11.Text = "Количество загруженных строк:";
+            // 
+            // chkCreditors
+            // 
+            this.chkCreditors.AutoSize = true;
+            this.chkCreditors.Location = new System.Drawing.Point(349, 125);
+            this.chkCreditors.Name = "chkCreditors";
+            this.chkCreditors.Size = new System.Drawing.Size(15, 14);
+            this.chkCreditors.TabIndex = 25;
+            this.chkCreditors.UseVisualStyleBackColor = true;
+            this.chkCreditors.CheckedChanged += new System.EventHandler(this.chkCreditors_CheckedChanged);
+            // 
+            // chkShorts
+            // 
+            this.chkShorts.AutoSize = true;
+            this.chkShorts.Location = new System.Drawing.Point(349, 189);
+            this.chkShorts.Name = "chkShorts";
+            this.chkShorts.Size = new System.Drawing.Size(15, 14);
+            this.chkShorts.TabIndex = 27;
+            this.chkShorts.UseVisualStyleBackColor = true;
+            this.chkShorts.CheckedChanged += new System.EventHandler(this.chkShorts_CheckedChanged);
+            // 
+            // groupBoxShorts
+            // 
+            this.groupBoxShorts.Controls.Add(this.btnOpenShortsTempl);
+            this.groupBoxShorts.Controls.Add(this.lblShortsErrors);
+            this.groupBoxShorts.Controls.Add(this.lblShortsLines);
+            this.groupBoxShorts.Controls.Add(this.label12);
+            this.groupBoxShorts.Controls.Add(this.label13);
+            this.groupBoxShorts.Location = new System.Drawing.Point(12, 163);
+            this.groupBoxShorts.Name = "groupBoxShorts";
+            this.groupBoxShorts.Size = new System.Drawing.Size(331, 58);
+            this.groupBoxShorts.TabIndex = 26;
+            this.groupBoxShorts.TabStop = false;
+            this.groupBoxShorts.Text = "Короткие позиции";
+            // 
+            // btnOpenShortsTempl
+            // 
+            this.btnOpenShortsTempl.Image = global::_412_check.Properties.Resources.excel_32px_2;
+            this.btnOpenShortsTempl.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btnOpenShortsTempl.Location = new System.Drawing.Point(281, 12);
+            this.btnOpenShortsTempl.Name = "btnOpenShortsTempl";
+            this.btnOpenShortsTempl.Size = new System.Drawing.Size(40, 40);
+            this.btnOpenShortsTempl.TabIndex = 19;
+            this.btnOpenShortsTempl.UseVisualStyleBackColor = true;
+            this.btnOpenShortsTempl.Click += new System.EventHandler(this.btnOpenShortsTempl_Click);
+            // 
+            // lblShortsErrors
+            // 
+            this.lblShortsErrors.AutoSize = true;
+            this.lblShortsErrors.Location = new System.Drawing.Point(183, 36);
+            this.lblShortsErrors.Name = "lblShortsErrors";
+            this.lblShortsErrors.Size = new System.Drawing.Size(76, 13);
+            this.lblShortsErrors.TabIndex = 3;
+            this.lblShortsErrors.Text = "не загружено";
+            // 
+            // lblShortsLines
+            // 
+            this.lblShortsLines.AutoSize = true;
+            this.lblShortsLines.Location = new System.Drawing.Point(183, 16);
+            this.lblShortsLines.Name = "lblShortsLines";
+            this.lblShortsLines.Size = new System.Drawing.Size(76, 13);
+            this.lblShortsLines.TabIndex = 2;
+            this.lblShortsLines.Text = "не загружено";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 36);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(159, 13);
+            this.label12.TabIndex = 1;
+            this.label12.Text = "Количество ошибок загрузки:";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 16);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(171, 13);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "Количество загруженных строк:";
+            // 
+            // btnCalculate2sect
+            // 
+            this.btnCalculate2sect.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnCalculate2sect.Enabled = false;
+            this.btnCalculate2sect.Location = new System.Drawing.Point(12, 416);
+            this.btnCalculate2sect.Name = "btnCalculate2sect";
+            this.btnCalculate2sect.Size = new System.Drawing.Size(122, 23);
+            this.btnCalculate2sect.TabIndex = 28;
+            this.btnCalculate2sect.Text = "Расчитать 2 раздел";
+            this.btnCalculate2sect.UseVisualStyleBackColor = true;
+            this.btnCalculate2sect.Click += new System.EventHandler(this.btnCalculate2sect_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1411, 670);
-            this.Controls.Add(this.btnCheck);
-            this.Controls.Add(this.btnCalculate);
+            this.Controls.Add(this.btnCalculate2sect);
             this.Controls.Add(this.monthCalendar1);
+            this.Controls.Add(this.chkShorts);
+            this.Controls.Add(this.groupBoxShorts);
+            this.Controls.Add(this.chkCreditors);
+            this.Controls.Add(this.groupBoxCreditors);
+            this.Controls.Add(this.btnCheck);
+            this.Controls.Add(this.btnCalculate1sect);
             this.Controls.Add(this.chkFXrates);
             this.Controls.Add(this.chkREPO);
             this.Controls.Add(this.chkDebitors);
             this.Controls.Add(this.groupBoxCurrRates);
             this.Controls.Add(this.cboGridViewSelect);
-            this.Controls.Add(this.groupBoxRevRepo);
+            this.Controls.Add(this.groupBoxRepo);
             this.Controls.Add(this.btnReportDate);
             this.Controls.Add(this.lblReportDate);
             this.Controls.Add(this.label2);
@@ -425,10 +607,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBoxDebitors.ResumeLayout(false);
             this.groupBoxDebitors.PerformLayout();
-            this.groupBoxRevRepo.ResumeLayout(false);
-            this.groupBoxRevRepo.PerformLayout();
+            this.groupBoxRepo.ResumeLayout(false);
+            this.groupBoxRepo.PerformLayout();
             this.groupBoxCurrRates.ResumeLayout(false);
             this.groupBoxCurrRates.PerformLayout();
+            this.groupBoxCreditors.ResumeLayout(false);
+            this.groupBoxCreditors.PerformLayout();
+            this.groupBoxShorts.ResumeLayout(false);
+            this.groupBoxShorts.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -449,7 +635,7 @@
         private System.Windows.Forms.Label lblReportDate;
         private System.Windows.Forms.Button btnReportDate;
         private System.Windows.Forms.Button btnOpenDebTmpl;
-        private System.Windows.Forms.GroupBox groupBoxRevRepo;
+        private System.Windows.Forms.GroupBox groupBoxRepo;
         private System.Windows.Forms.Label lblRepoErrors;
         private System.Windows.Forms.Label lblRepoLines;
         private System.Windows.Forms.Label label6;
@@ -465,8 +651,23 @@
         private System.Windows.Forms.CheckBox chkDebitors;
         private System.Windows.Forms.CheckBox chkREPO;
         private System.Windows.Forms.CheckBox chkFXrates;
-        private System.Windows.Forms.Button btnCalculate;
+        private System.Windows.Forms.Button btnCalculate1sect;
         private System.Windows.Forms.Button btnCheck;
+        private System.Windows.Forms.GroupBox groupBoxCreditors;
+        private System.Windows.Forms.Label lblCreditorsErrors;
+        private System.Windows.Forms.Button btnOpenCredTmpl;
+        private System.Windows.Forms.Label lblCreditorsLines;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox chkCreditors;
+        private System.Windows.Forms.CheckBox chkShorts;
+        private System.Windows.Forms.GroupBox groupBoxShorts;
+        private System.Windows.Forms.Button btnOpenShortsTempl;
+        private System.Windows.Forms.Label lblShortsErrors;
+        private System.Windows.Forms.Label lblShortsLines;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btnCalculate2sect;
     }
 }
 

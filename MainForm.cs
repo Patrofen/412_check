@@ -13,6 +13,10 @@ namespace _412_check
         object DataGridView { get; set; }
         string TotalDebitorsLines { set; }
         string TotalDebitorsErrors { set; }
+        string TotalCreditorsLines { set; }
+        string TotalCreditorsErrors { set; }
+        string TotalShortsLines { set; }
+        string TotalShortsErrors { set; }
         string TotalRepoLines { set; }
         string TotalRepoErrors { set; }
         string TotalCurrRatesLines { set; }
@@ -22,9 +26,12 @@ namespace _412_check
 
         event EventHandler LoadTemplatesClick;
         event EventHandler OpenDebitorsTmplateClick;
-        event EventHandler OpenRevRepoTmplateClick;
+        event EventHandler OpenCreditorsTmplateClick;
+        event EventHandler OpenShortsTmplateClick;
+        event EventHandler OpenRepoTmplateClick;
         event EventHandler OpenCurrRatesTmplateClick;
-        event EventHandler CalculateClick;
+        event EventHandler Calculate1sectClick;
+        event EventHandler Calculate2sectClick;
         event EventHandler CheckClick;
         event FormEventHandler CboGridViewChanged;
     }
@@ -40,24 +47,38 @@ namespace _412_check
         private void btnLoadTemplates_Click(object sender, EventArgs e)
         {
             if (LoadTemplatesClick != null) LoadTemplatesClick(this, EventArgs.Empty);
-            btnCalculate.Enabled = true;
+            btnCalculate1sect.Enabled = true;
+            btnCalculate2sect.Enabled = true;
         }
         private void btnOpenDebTmpl_Click(object sender, EventArgs e)
         {
             if (OpenDebitorsTmplateClick != null) OpenDebitorsTmplateClick(this, EventArgs.Empty);
         }
+        private void btnOpenCredTmpl_Click(object sender, EventArgs e)
+        {
+            if (OpenCreditorsTmplateClick != null) OpenCreditorsTmplateClick(this, EventArgs.Empty);
+        }
+        private void btnOpenShortsTempl_Click(object sender, EventArgs e)
+        {
+            if (OpenShortsTmplateClick != null) OpenShortsTmplateClick(this, EventArgs.Empty);
+        }
         private void btnOpenRepoTmpl_Click(object sender, EventArgs e)
         {
-            if (OpenRevRepoTmplateClick != null) OpenRevRepoTmplateClick(this, EventArgs.Empty);
+            if (OpenRepoTmplateClick != null) OpenRepoTmplateClick(this, EventArgs.Empty);
         }
         private void btnOpenCurrRatesTmpl_Click(object sender, EventArgs e)
         {
             if (OpenCurrRatesTmplateClick != null) OpenCurrRatesTmplateClick(this, EventArgs.Empty);
         }
-        private void btnCalculate_Click(object sender, EventArgs e)
+        private void btnCalculate1sect_Click(object sender, EventArgs e)
         {
-            if (CalculateClick != null) CalculateClick(this, EventArgs.Empty);
-            btnCheck.Enabled = true;
+            if (Calculate1sectClick != null) Calculate1sectClick(this, EventArgs.Empty);
+            //btnCheck.Enabled = true;
+        }
+        private void btnCalculate2sect_Click(object sender, EventArgs e)
+        {
+            if (Calculate2sectClick != null) Calculate2sectClick(this, EventArgs.Empty);
+            //btnCheck.Enabled = true;
         }
         private void btnCheck_Click(object sender, EventArgs e)
         {
@@ -93,6 +114,26 @@ namespace _412_check
         {
             set { lblDebitorsErrors.Text = value; }
         }
+        //Количество строк Кредиторской задолженности
+        public string TotalCreditorsLines
+        {
+            set { lblCreditorsLines.Text = value; }
+        }
+        //Количество ошибок загрузки Кредиторской задолженности
+        public string TotalCreditorsErrors
+        {
+            set { lblCreditorsErrors.Text = value; }
+        }
+        //Количество строк Коротких позиций
+        public string TotalShortsLines
+        {
+            set { lblShortsLines.Text = value; }
+        }
+        //Количество ошибок загрузки Коротких позиций
+        public string TotalShortsErrors
+        {
+            set { lblShortsErrors.Text = value; }
+        }
         //Количество строк Обратного РЕПО
         public string TotalRepoLines
         {
@@ -121,9 +162,12 @@ namespace _412_check
 
         public event EventHandler LoadTemplatesClick;
         public event EventHandler OpenDebitorsTmplateClick;
-        public event EventHandler OpenRevRepoTmplateClick;
+        public event EventHandler OpenCreditorsTmplateClick;
+        public event EventHandler OpenShortsTmplateClick;
+        public event EventHandler OpenRepoTmplateClick;
         public event EventHandler OpenCurrRatesTmplateClick;
-        public event EventHandler CalculateClick;
+        public event EventHandler Calculate1sectClick;
+        public event EventHandler Calculate2sectClick;
         public event EventHandler CheckClick;
         public event FormEventHandler CboGridViewChanged;
         #endregion
@@ -156,15 +200,22 @@ namespace _412_check
         {
             CheckLoadPermissions();
         }
+        private void chkCreditors_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckLoadPermissions();
+        }
+        private void chkShorts_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckLoadPermissions();
+        }
         private void CheckLoadPermissions()
         {
-            if (chkFXrates.Checked && chkDebitors.Checked && chkREPO.Checked && (lblReportDate.Text != "дата не установлена"))
+            if (chkDebitors.Checked && chkCreditors.Checked && chkShorts.Checked && chkREPO.Checked && chkFXrates.Checked && (lblReportDate.Text != "дата не установлена"))
             {
                 btnLoadTemplates.Enabled = true;
             }
             else btnLoadTemplates.Enabled = false;
         }
-
         #endregion
 
         

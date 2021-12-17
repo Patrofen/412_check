@@ -40,6 +40,8 @@ namespace _412_check.BL
 
             excel.Workbooks.Open(filePath.FullName);
             excel.Visible = true;
+            excel.WindowState = Excel.XlWindowState.xlMinimized;
+            excel.WindowState = Excel.XlWindowState.xlNormal;
         }
 
         //Используется ExcelDataReader
@@ -98,7 +100,7 @@ namespace _412_check.BL
             switch (table.TableName)
             {
                 case "debitorsSystem":
-                case "commonRepoSystem":
+                //case "commonRepoSystem":
                 case "commonDebitSystem":
                 case "groupedDebitSystem":
                 case "debitSystem":
@@ -118,6 +120,30 @@ namespace _412_check.BL
                     table.Columns.Add("Единиц", typeof(int));
                     table.Columns.Add("Валюта", typeof(string));
                     table.Columns.Add("Курс", typeof(double));
+                    break;
+                case "commonCreditSystem":
+                case "groupedCreditSystem":
+                case "creditSystem":
+                case "creditorsSystem":
+                case "shortsSystem":
+                    table.Reset();
+                    table.Columns.Add("Идентификатор обязательства перед кредитором", typeof(string));
+                    table.Columns.Add("Наименование кредитора", typeof(string));
+                    table.Columns.Add("Код валюты", typeof(string));
+                    table.Columns.Add("Объем обязательства в единицах валюты", typeof(double));
+                    table.Columns.Add("Объем обязательства в рублях", typeof(double));
+                    table.Columns.Add("Тип обязательства", typeof(string));
+                    table.Columns.Add("Срок погашения", typeof(string));
+                    break;
+                case "commonRepoSystem":
+                    table.Reset();
+                    table.Columns.Add("Идентификатор контрагента", typeof(string));
+                    table.Columns.Add("Наименование контрагента", typeof(string));
+                    table.Columns.Add("Код валюты", typeof(string));
+                    table.Columns.Add("Объем требования или обязательства в единицах валюты", typeof(double));
+                    table.Columns.Add("Объем требования или обязательства в рублях", typeof(double));
+                    table.Columns.Add("Тип требования или обязательства", typeof(string));
+                    table.Columns.Add("Срок погашения", typeof(string));
                     break;
             }
         }

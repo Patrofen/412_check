@@ -15,6 +15,8 @@ namespace _412_check
         private readonly IMessageService _messageService;
         private System.Data.DataTableCollection xlsSheetsCollection;
         private int totalDebitorsErrors;
+        private int totalCreditorsErrors;
+        private int totalShortsErrors;
         private int totalRepoErrors;
         private int totalCurrRatesErrors;
 
@@ -24,13 +26,20 @@ namespace _412_check
         //Основные данные
         private System.Data.DataTable tbl_debitorsTemplate; //Шаблон для загрузки превичных данных по всей дебиторке
         private System.Data.DataTable tbl_debitorsSystem = new System.Data.DataTable("debitorsSystem"); //Дебиторка - обработанные данные
+        private System.Data.DataTable tbl_creditorsTemplate; //Шаблон для загрузки превичных данных по всей кредиторской задолж.
+        private System.Data.DataTable tbl_creditorsSystem = new System.Data.DataTable("creditorsSystem"); //Кред. задолж. - обработанные данные
+        private System.Data.DataTable tbl_shortsTemplate; //Шаблон для загрузки превичных данных по коротким позициям
+        private System.Data.DataTable tbl_shortsSystem = new System.Data.DataTable("shortsSystem"); //Короткие позиции - обработанные данные
         private System.Data.DataTable tbl_commonRepoTemplate; //Шаблон для загрузки первичных данных по всем сделкам РЕПО
         private System.Data.DataTable tbl_currRatesTemplate; //Шаблон для загрузки первичных данных по курсам валют
         private System.Data.DataTable tbl_currRatesSystem = new System.Data.DataTable("currRatesSystem"); //Курсы валют - обработанные данные
         private System.Data.DataTable tbl_commonRepoSystem = new System.Data.DataTable("commonRepoSystem"); //РЕПО - обработанные данные
         private System.Data.DataTable tbl_CommonDebitSystem = new System.Data.DataTable("commonDebitSystem"); //Общая для всех данных 1-го раздела
-        private System.Data.DataTable tbl_DebitSystem = new System.Data.DataTable("debitSystem"); //Выборка данных >1% для 1-го раздела
+        private System.Data.DataTable tbl_DebitSystem = new System.Data.DataTable("debitSystem"); //Выборка данных >1% для 1-го раздела (детализированная)
         private System.Data.DataTable tbl_GroupedDebitSystem = new System.Data.DataTable("groupedDebitSystem"); //Рассчитанный 1-й раздел
+        private System.Data.DataTable tbl_CommonCreditSystem = new System.Data.DataTable("commonCreditSystem"); //Общая для всех данных 2-го раздела
+        private System.Data.DataTable tbl_CreditSystem = new System.Data.DataTable("creditSystem"); //Выборка данных >1% для 2-го раздела (детализированная)
+        private System.Data.DataTable tbl_GroupedCreditSystem = new System.Data.DataTable("groupedCreditSystem"); //Рассчитанный 2-й раздел
 
 
         //Конструктор
@@ -40,14 +49,21 @@ namespace _412_check
             _bsnsLogic = bsnsLogic;
             _messageService = service;
             _view.OpenDebitorsTmplateClick += _view_OpenDebitorsTmplateClick;
-            _view.OpenRevRepoTmplateClick += _view_OpenRevRepoTmplateClick;
+            _view.OpenCreditorsTmplateClick += _view_OpenCreditorsTmplateClick;
+            _view.OpenShortsTmplateClick += _view_OpenShortsTmplateClick;
+            _view.OpenRepoTmplateClick += _view_OpenRepoTmplateClick;
             _view.LoadTemplatesClick += _view_LoadTemplatesClick;
             _view.OpenCurrRatesTmplateClick += _view_OpenCurrRatesTmplateClick;
-            _view.CalculateClick += _view_CalculateClick;
+            _view.Calculate1sectClick += _view_Calculate1sectClick;
+            _view.Calculate2sectClick += _view_Calculate2sectClick;
             _view.CheckClick += _view_CheckClick;
             _view.CboGridViewChanged += _view_CboGridViewChanged;
             LoadDirectories();
         }
+
+        
+
+
 
         #region Обработчики нажатия кнопок
         //Открыть шаблон Дебиторская_задолженность.xlsx
@@ -56,8 +72,20 @@ namespace _412_check
             FileInfo xlFile_debitTmlp = Utils.GetFileInfo("Шаблоны", "Дебиторская_задолженность.xlsx");
             OpenUsingOfficeInterop(xlFile_debitTmlp);
         }
+        //Открыть шаблон Кредиторская_задолженность.xlsx
+        private void _view_OpenCreditorsTmplateClick(object sender, EventArgs e)
+        {
+            FileInfo xlFile_creditTmlp = Utils.GetFileInfo("Шаблоны", "Кредиторская_задолженность.xlsx");
+            OpenUsingOfficeInterop(xlFile_creditTmlp);
+        }
+        //Открыть шаблон Короткие_позиции.xlsx
+        private void _view_OpenShortsTmplateClick(object sender, EventArgs e)
+        {
+            FileInfo xlFile_shortsTmlp = Utils.GetFileInfo("Шаблоны", "Короткие_позиции.xlsx");
+            OpenUsingOfficeInterop(xlFile_shortsTmlp);
+        }
         //Открыть шаблон РЕПО.xlsx
-        private void _view_OpenRevRepoTmplateClick(object sender, EventArgs e)
+        private void _view_OpenRepoTmplateClick(object sender, EventArgs e)
         {
             FileInfo xlFile_RepoTmlp = Utils.GetFileInfo("Шаблоны", "РЕПО.xlsx");
             OpenUsingOfficeInterop(xlFile_RepoTmlp);
@@ -102,6 +130,34 @@ namespace _412_check
                     _view.TotalDebitorsErrors = "ошибка загрузки";
                 }
 
+                //Из файла Кредиторская_задолженность.xlsx
+                FileInfo xlFile_creditors_templ = Utils.GetFileInfo("Шаблоны", "Кредиторская_задолженность.xlsx");
+                tbl_creditorsTemplate = OpenUsingExcelDataReader(xlFile_creditors_templ);
+                if (tbl_creditorsTemplate != null)
+                {
+                    _view.TotalCreditorsLines = tbl_creditorsTemplate.Rows.Count.ToString();
+                    CheckAndWriteCreditors(tbl_creditorsTemplate);
+                }
+                else
+                {
+                    _view.TotalCreditorsLines = "ошибка загрузки";
+                    _view.TotalCreditorsErrors = "ошибка загрузки";
+                }
+                
+                //Из файла Короткие_позиции.xlsx
+                FileInfo xlFile_shorts_templ = Utils.GetFileInfo("Шаблоны", "Короткие_позиции.xlsx");
+                tbl_shortsTemplate = OpenUsingExcelDataReader(xlFile_shorts_templ);
+                if (tbl_shortsTemplate != null)
+                {
+                    _view.TotalShortsLines = tbl_shortsTemplate.Rows.Count.ToString();
+                    CheckAndWriteShorts(tbl_shortsTemplate);
+                }
+                else
+                {
+                    _view.TotalShortsLines = "ошибка загрузки";
+                    _view.TotalShortsErrors = "ошибка загрузки";
+                }
+                
                 //Из файла РЕПО.xlsx
                 FileInfo xlFile_Repo_templ = Utils.GetFileInfo("Шаблоны", "РЕПО.xlsx");
                 tbl_commonRepoTemplate = OpenUsingExcelDataReader(xlFile_Repo_templ);
@@ -138,23 +194,35 @@ namespace _412_check
                 case "Дебиторы":
                     _view.DataGridView = tbl_debitorsSystem;
                     break;
+                case "Кредиторы":
+                    _view.DataGridView = tbl_creditorsSystem;
+                    break;
+                case "Короткие позиции":
+                    _view.DataGridView = tbl_shortsSystem;
+                    break;
                 case "РЕПО":
                     _view.DataGridView = tbl_commonRepoSystem;
                     break;
                 case "Курсы валют":
                     _view.DataGridView = tbl_currRatesSystem;
                     break;
+                case "Раздел 1 сгруппированный":
+                    _view.DataGridView = tbl_GroupedDebitSystem;
+                    break;
                 case "Раздел 1 детализированный":
                     _view.DataGridView = tbl_DebitSystem;
                     break;
-                case "Раздел 1 сгруппированный":
-                    _view.DataGridView = tbl_GroupedDebitSystem;
+                case "Раздел 2 сгруппированный":
+                    _view.DataGridView = tbl_GroupedCreditSystem;
+                    break;
+                case "Раздел 2 детализированный":
+                    _view.DataGridView = tbl_CreditSystem;
                     break;
             }
         }
 
-        //Расчет значений показателей формы
-        private void _view_CalculateClick(object sender, EventArgs e)
+        //Расчет значений показателей 1-го раздела формы
+        private void _view_Calculate1sectClick(object sender, EventArgs e)
         {
             _bsnsLogic.ResetSystemTable(tbl_CommonDebitSystem);
             _bsnsLogic.ResetSystemTable(tbl_GroupedDebitSystem);
@@ -166,15 +234,24 @@ namespace _412_check
                 tbl_CommonDebitSystem.ImportRow(dr);
             }
 
-            //Копирование всех строк обратного РЕПО (bye stock) в общую таблицу
+            //Копирование всех строк обратного РЕПО (buy stock) в общую таблицу
             foreach (DataRow dr in tbl_commonRepoSystem.Rows)
             {
-                if (dr["Тип требования"].ToString() == "требования по сделкам репо")
+                if (dr["Тип требования или обязательства"].ToString() == "требования по сделкам репо")
                 {
-                    tbl_CommonDebitSystem.ImportRow(dr);
+                    DataRow row = tbl_CommonDebitSystem.NewRow();
+                    row[0] = dr[0];
+                    row[1] = dr[1];
+                    row[2] = dr[2];
+                    row[3] = dr[3];
+                    row[4] = dr[4];
+                    row[5] = dr[5];
+                    row[6] = dr[6];
+                    tbl_CommonDebitSystem.Rows.Add(row);
                 }
             }
-                
+             
+            
             double _1percent = 0.01 * tbl_CommonDebitSystem.AsEnumerable().Sum(x => x.Field<double>("Объем требования в рублях"));
 
             var debitorsFor1Sect = from deb in tbl_CommonDebitSystem.AsEnumerable()
@@ -200,6 +277,7 @@ namespace _412_check
             }
             _view.CboGridViewSelect= "Раздел 1 детализированный";
 
+            //Заполнение сгруппированной информации по первому разделу
             foreach (var _group in debitorsFor1Sect)
             {
                 var grByCurr = from deb in _group
@@ -244,10 +322,120 @@ namespace _412_check
             _view.CboGridViewSelect = "Раздел 1 сгруппированный";
         }
 
+        //Расчет значений показателей 2-го раздела формы
+        private void _view_Calculate2sectClick(object sender, EventArgs e)
+        {
+            _bsnsLogic.ResetSystemTable(tbl_CommonCreditSystem);
+            _bsnsLogic.ResetSystemTable(tbl_GroupedCreditSystem);
+            _bsnsLogic.ResetSystemTable(tbl_CreditSystem);
+
+            //Копирование всех строк кредиторской задолженности в общую таблицу
+            foreach (DataRow dr in tbl_creditorsSystem.Rows)
+            {
+                tbl_CommonCreditSystem.ImportRow(dr);
+            }
+
+            //Копирование всех строк прямого РЕПО (sell stock) в общую таблицу
+            foreach (DataRow dr in tbl_commonRepoSystem.Rows)
+            {
+                if (dr["Тип требования или обязательства"].ToString() == "обязательства по сделкам репо")
+                {
+                    DataRow row = tbl_CommonCreditSystem.NewRow();
+                    row[0] = dr[0];
+                    row[1] = dr[1];
+                    row[2] = dr[2];
+                    row[3] = dr[3];
+                    row[4] = dr[4];
+                    row[5] = dr[5];
+                    row[6] = dr[6];
+                    tbl_CommonCreditSystem.Rows.Add(row);
+                }
+            }
+
+            //Копирование всех строк короткой позиции в общую таблицу
+            foreach (DataRow dr in tbl_shortsSystem.Rows)
+            {
+                tbl_CommonCreditSystem.ImportRow(dr);
+            }
+
+            //_view.DataGridView = tbl_CommonCreditSystem;
+
+            double _1percent = 0.01 * tbl_CommonCreditSystem.AsEnumerable().Sum(x => x.Field<double>("Объем обязательства в рублях"));
+
+            var creditorsFor1Sect = from cred in tbl_CommonCreditSystem.AsEnumerable()
+                                    group cred by cred.Field<string>("Наименование кредитора") into groupedCred
+                                    where groupedCred.Sum(x => x.Field<double>("Объем обязательства в рублях")) > _1percent
+                                    select groupedCred;
+
+            //Заполнение детализированной информации по 2-му разделу
+            foreach (var group in creditorsFor1Sect)
+            {
+                foreach (DataRow item in group)
+                {
+                    DataRow row = tbl_CreditSystem.NewRow();
+                    row[0] = item[0];
+                    row[1] = item[1];
+                    row[2] = item[2];
+                    row[3] = item[3];
+                    row[4] = item[4];
+                    row[5] = item[5];
+                    row[6] = item[6];
+                    tbl_CreditSystem.Rows.Add(row);
+                }
+            }
+
+            //Заполнение сгруппированной информации по 2-му разделу
+            foreach (var _group in creditorsFor1Sect)
+            {
+                var grByCurr = from cred in _group
+                               group cred by cred.Field<string>("Код валюты") into groupedByCurr
+                               select groupedByCurr;
+
+                foreach (var item in grByCurr)
+                {
+                    var grByObligType = from cred in item
+                                        group cred by cred.Field<string>("Тип обязательства") into groupedByObligType
+                                        select groupedByObligType;
+
+                    foreach (var item2 in grByObligType)
+                    {
+                        var grByMaturDate = from cred in item2
+                                            group cred by cred.Field<string>("Срок погашения") into groupedByMaturDate
+                                            select groupedByMaturDate;
+
+                        foreach (var _group2 in grByMaturDate)
+                        {
+                            DataRow row = tbl_GroupedCreditSystem.NewRow();
+                            row[0] = _group2.First().Field<string>("Идентификатор обязательства перед кредитором");
+                            row[1] = _group2.First().Field<string>("Наименование кредитора");
+                            row[2] = _group2.First().Field<string>("Код валюты");
+                            row[4] = Math.Round(_group2.Sum(x => x.Field<double>("Объем обязательства в рублях")), 2);
+                            if (row[2].ToString() != "643-RUB")
+                            {
+                                row[3] = Math.Round(_group2.Sum(x => x.Field<double>("Объем обязательства в единицах валюты")), 2);
+                            }
+                            else
+                            {
+                                row[3] = row[4];
+                            }
+                            row[5] = _group2.First().Field<string>("Тип обязательства");
+                            row[6] = _group2.First().Field<string>("Срок погашения");
+
+                            tbl_GroupedCreditSystem.Rows.Add(row);
+                        }
+                    }
+                }
+            }
+            _view.CboGridViewSelect = "Раздел 2 сгруппированный";
+        }
+
+
+
+
         //Сверка расчитанных значений с отчетом 0420402
         private void _view_CheckClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            _messageService.ShowMessage("Функция еще не реализована");
         }
         #endregion
 
@@ -343,6 +531,75 @@ namespace _412_check
                 {
                     case DateTime maturity:
                         sys_row["Срок погашения"] = MaturutyFromDateToText(maturity);
+                        if (sys_row["Срок погашения"].ToString() == "error") totalDebitorsErrors += 1;
+                            break;
+                    case string maturity:
+                        if ((maturity == "без срока") |
+                            (maturity == "до 1 месяца") |
+                            (maturity == "до востребования") |
+                            (maturity == "от 1 до 3 месяцев") |
+                            (maturity == "от 3 до 6 месяцев") |
+                            (maturity == "от 6 месяцев до 1 года") |
+                            (maturity == "свыше 1 года"))
+                        {
+                            sys_row["Срок погашения"] = maturity;
+                        }
+
+                        else if (DateTime.TryParse(maturity, out DateTime result))
+                        {
+                            sys_row["Срок погашения"] = MaturutyFromDateToText(result);
+                            if (sys_row["Срок погашения"].ToString() == "error") totalDebitorsErrors += 1;
+                        }
+                        else
+                        {
+                            sys_row["Срок погашения"] = "error";
+                            totalDebitorsErrors += 1;
+                        }
+                        break;
+                }
+                tbl_debitorsSystem.Rows.Add(sys_row);
+            }
+            //FileInfo xlFile_debitors_clear = Utils.GetFileInfo("Системные", "Debitors_clear.xlsx");
+            //_bsnsLogic.DataTableToExcel(tbl_debitorsSystem, xlFile_debitors_clear);
+            _view.TotalDebitorsErrors = totalDebitorsErrors.ToString();
+        }
+
+
+
+        //Проверка данных в шаблоне "Кредиторская_задолженность.xlsx", перенос в системную таблицу tbl_creditorsSystem,
+        private void CheckAndWriteCreditors(System.Data.DataTable creditors_template)
+        {
+            totalCreditorsErrors = 0;
+            _bsnsLogic.ResetSystemTable(tbl_creditorsSystem);
+
+            foreach (DataRow templ_row in creditors_template.Rows)
+            {
+                DataRow sys_row = tbl_creditorsSystem.NewRow();
+
+                sys_row["Идентификатор обязательства перед кредитором"] = templ_row[0].ToString();
+
+                string creditorName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Наименование", out int errorsName);
+                if (creditorName == null)
+                {
+                    creditorName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Полное наименование", out int errorsFullName);
+                    totalCreditorsErrors += errorsFullName;
+                }
+                sys_row["Наименование кредитора"] = creditorName;
+                totalCreditorsErrors += errorsName;
+
+                string currCode = _bsnsLogic.FindCorrespondence(templ_row[2].ToString(), tbl_currCatalog, "Букв. код", "Код", out int errorsCurr);
+                sys_row["Код валюты"] = currCode;
+                totalCreditorsErrors += errorsCurr;
+
+                sys_row["Объем обязательства в единицах валюты"] = -(double)templ_row[3];
+                sys_row["Объем обязательства в рублях"] = -(double)templ_row[4];
+                sys_row["Тип обязательства"] = "кредиторская задолженность";
+
+                switch (templ_row[5])
+                {
+                    case DateTime maturity:
+                        sys_row["Срок погашения"] = MaturutyFromDateToText(maturity);
+                        if (sys_row["Срок погашения"].ToString() == "error") totalCreditorsErrors += 1;
                         break;
                     case string maturity:
                         if ((maturity == "без срока") |
@@ -359,19 +616,84 @@ namespace _412_check
                         else if (DateTime.TryParse(maturity, out DateTime result))
                         {
                             sys_row["Срок погашения"] = MaturutyFromDateToText(result);
+                            if (sys_row["Срок погашения"].ToString() == "error") totalCreditorsErrors += 1;
+                              
                         }
                         else
                         {
                             sys_row["Срок погашения"] = "error";
-                            totalDebitorsErrors += 1;
+                            totalCreditorsErrors += 1;
                         }
                         break;
                 }
-                tbl_debitorsSystem.Rows.Add(sys_row);
+                tbl_creditorsSystem.Rows.Add(sys_row);
             }
-            FileInfo xlFile_debitors_clear = Utils.GetFileInfo("Системные", "Debitors_clear.xlsx");
-            _bsnsLogic.DataTableToExcel(tbl_debitorsSystem, xlFile_debitors_clear);
-            _view.TotalDebitorsErrors = totalDebitorsErrors.ToString();
+            _view.TotalCreditorsErrors = totalCreditorsErrors.ToString();
+        }
+        
+        //Проверка данных в шаблоне "Короткие_позиции.xlsx", перенос в системную таблицу tbl_shortsSystem,
+        private void CheckAndWriteShorts(System.Data.DataTable shorts_template)
+        {
+            totalShortsErrors = 0;
+            _bsnsLogic.ResetSystemTable(tbl_shortsSystem);
+
+            foreach (DataRow templ_row in shorts_template.Rows)
+            {
+                DataRow sys_row = tbl_shortsSystem.NewRow();
+
+                sys_row["Идентификатор обязательства перед кредитором"] = templ_row[0].ToString();
+
+                string ShortCptyName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Наименование", out int errorsName);
+                if (ShortCptyName == null)
+                {
+                    ShortCptyName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Полное наименование", out int errorsFullName);
+                    totalShortsErrors += errorsFullName;
+                }
+                sys_row["Наименование кредитора"] = ShortCptyName;
+                totalShortsErrors += errorsName;
+
+                string currCode = _bsnsLogic.FindCorrespondence(templ_row[2].ToString(), tbl_currCatalog, "Букв. код", "Код", out int errorsCurr);
+                sys_row["Код валюты"] = currCode;
+                totalShortsErrors += errorsCurr;
+
+                sys_row["Объем обязательства в единицах валюты"] = -(double)templ_row[3];
+                sys_row["Объем обязательства в рублях"] = -(double)templ_row[4];
+                sys_row["Тип обязательства"] = "иные обязательства, оцениваемые по справедливой стоимости через прибыль или убыток";
+
+                switch (templ_row[5])
+                {
+                    case DateTime maturity:
+                        sys_row["Срок погашения"] = MaturutyFromDateToText(maturity);
+                        if (sys_row["Срок погашения"].ToString() == "error") totalShortsErrors += 1;
+                        break;
+                    case string maturity:
+                        if ((maturity == "без срока") |
+                            (maturity == "до 1 месяца") |
+                            (maturity == "до востребования") |
+                            (maturity == "от 1 до 3 месяцев") |
+                            (maturity == "от 3 до 6 месяцев") |
+                            (maturity == "от 6 месяцев до 1 года") |
+                            (maturity == "свыше 1 года"))
+                        {
+                            sys_row["Срок погашения"] = maturity;
+                        }
+
+                        else if (DateTime.TryParse(maturity, out DateTime result))
+                        {
+                            sys_row["Срок погашения"] = MaturutyFromDateToText(result);
+                            if (sys_row["Срок погашения"].ToString() == "error") totalShortsErrors += 1;
+
+                        }
+                        else
+                        {
+                            sys_row["Срок погашения"] = "error";
+                            totalShortsErrors += 1;
+                        }
+                        break;
+                }
+                tbl_shortsSystem.Rows.Add(sys_row);
+            }
+            _view.TotalShortsErrors = totalShortsErrors.ToString();
         }
 
         //Проверка данных в шаблоне "РЕПО.xlsx", перенос в системные таблицы tbl_RepoSystem и tbl_reverseRepoSystem,
@@ -384,15 +706,15 @@ namespace _412_check
             foreach (DataRow templ_row in REPO_template.Rows)
             {
                 DataRow sys_row = tbl_commonRepoSystem.NewRow();
-                sys_row["Идентификатор требования к дебитору"] = templ_row[0];
+                sys_row["Идентификатор контрагента"] = templ_row[0];
 
-                string debitorName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Наименование", out int errorsName);
-                if (debitorName == null)
+                string CptyName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Наименование", out int errorsName);
+                if (CptyName == null)
                 {
-                    debitorName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Полное наименование", out int errorsFullName);
+                    CptyName = _bsnsLogic.FindCorrespondence(templ_row[0].ToString(), tbl_CptyCatalog, "Идентификатор", "Полное наименование", out int errorsFullName);
                     totalRepoErrors += errorsFullName;
                 }
-                sys_row["Наименование дебитора"] = debitorName;
+                sys_row["Наименование контрагента"] = CptyName;
                 totalRepoErrors += errorsName;
 
                 string currCode = _bsnsLogic.FindCorrespondence(templ_row[2].ToString(), tbl_currCatalog, "Букв. код", "Код", out int errorsCurr);
@@ -410,16 +732,16 @@ namespace _412_check
                     {
                         if (templ_row[5].ToString() == "Buy stock ")
                         {
-                            sys_row["Объем требования в рублях"] = Math.Round(amountInRUB + AccInt, 2);
+                            sys_row["Объем требования или обязательства в рублях"] = Math.Round(amountInRUB + AccInt, 2);
                         }
                         else
                         {
-                            sys_row["Объем требования в рублях"] = Math.Round(amountInRUB + (-AccInt), 2);
+                            sys_row["Объем требования или обязательства в рублях"] = Math.Round(amountInRUB + (-AccInt), 2);
                         }
                     }
                     else
                     {
-                        sys_row["Объем требования в рублях"] = 0;
+                        sys_row["Объем требования или обязательства в рублях"] = 0;
                         totalRepoErrors += 1;
                     }
                 }
@@ -429,33 +751,33 @@ namespace _412_check
                     {
                         if (templ_row[5].ToString() == "Buy stock ")
                         {
-                            sys_row["Объем требования в рублях"] = Math.Round(amountInRUB + AccInt, 2);
-                            sys_row["Объем требования в единицах валюты"] = Math.Round((amountInRUB + AccInt) / FxRateDouble, 2);
+                            sys_row["Объем требования или обязательства в рублях"] = Math.Round(amountInRUB + AccInt, 2);
+                            sys_row["Объем требования или обязательства в единицах валюты"] = Math.Round((amountInRUB + AccInt) / FxRateDouble, 2);
                         }
                         else
                         {
-                            sys_row["Объем требования в рублях"] = Math.Round(amountInRUB + (-AccInt), 2);
-                            sys_row["Объем требования в единицах валюты"] = Math.Round((amountInRUB + (-AccInt)) / FxRateDouble, 2);
+                            sys_row["Объем требования или обязательства в рублях"] = Math.Round(amountInRUB + (-AccInt), 2);
+                            sys_row["Объем требования или обязательства в единицах валюты"] = Math.Round((amountInRUB + (-AccInt)) / FxRateDouble, 2);
                         }
                     }
                     else
                     {
-                        sys_row["Объем требования в единицах валюты"] = 0;
+                        sys_row["Объем требования или обязательства в единицах валюты"] = 0;
                         totalRepoErrors += 1;
                     }
                 }
 
                 if (templ_row[5].ToString() == "Buy stock ")
                 {
-                    sys_row["Тип требования"] = "требования по сделкам репо";
+                    sys_row["Тип требования или обязательства"] = "требования по сделкам репо";
                 }
                 else if (templ_row[5].ToString() == "Sell stock")
                 {
-                    sys_row["Тип требования"] = "обязательства по сделкам репо";
+                    sys_row["Тип требования или обязательства"] = "обязательства по сделкам репо";
                 }
                 else
                 {
-                    sys_row["Тип требования"] = "error";
+                    sys_row["Тип требования или обязательства"] = "error";
                     totalRepoErrors += 1;
                 }
 
@@ -463,6 +785,7 @@ namespace _412_check
                 if (DateTime.TryParse(maturity, out DateTime result))
                 {
                     sys_row["Срок погашения"] = MaturutyFromDateToText(result);
+                    if (sys_row["Срок погашения"].ToString() == "error") totalRepoErrors += 1;
                 }
                 else
                 {
@@ -471,8 +794,8 @@ namespace _412_check
                 }
                 tbl_commonRepoSystem.Rows.Add(sys_row);
             }
-            FileInfo xlFile_Repo_clear = Utils.GetFileInfo("Системные", "REPO_clear.xlsx");
-            _bsnsLogic.DataTableToExcel(tbl_commonRepoSystem, xlFile_Repo_clear);
+            //FileInfo xlFile_Repo_clear = Utils.GetFileInfo("Системные", "REPO_clear.xlsx");
+            //_bsnsLogic.DataTableToExcel(tbl_commonRepoSystem, xlFile_Repo_clear);
             _view.TotalRepoErrors = totalRepoErrors.ToString();
         }
 
@@ -525,8 +848,8 @@ namespace _412_check
                 }
                 tbl_currRatesSystem.Rows.Add(sys_row);
             }
-            FileInfo xlFile_CurrRatesSustem = Utils.GetFileInfo("Системные", "Curr_rates_system.xlsx");
-            _bsnsLogic.DataTableToExcel(tbl_currRatesSystem, xlFile_CurrRatesSustem);
+            //FileInfo xlFile_CurrRatesSustem = Utils.GetFileInfo("Системные", "Curr_rates_system.xlsx");
+            //_bsnsLogic.DataTableToExcel(tbl_currRatesSystem, xlFile_CurrRatesSustem);
             _view.TotalCurrRatesErrors = totalCurrRatesErrors.ToString();
         }
 
@@ -539,7 +862,7 @@ namespace _412_check
             TimeSpan daysInNext_6_Months = _view.ReportDate.AddMonths(6) - _view.ReportDate;
             TimeSpan daysInNext_12_Months = _view.ReportDate.AddMonths(12) - _view.ReportDate;
             //просроченная задолженность
-            if (delta.Days < 0)
+            if (delta.Days <= 0)
             {
                 return "просрочена";
             }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.btnLoadTemplates = new System.Windows.Forms.Button();
@@ -90,16 +90,16 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = null;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.Location = new System.Drawing.Point(374, 43);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -116,7 +116,6 @@
             // 
             // btnLoadTemplates
             // 
-            this.btnLoadTemplates.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnLoadTemplates.Enabled = false;
             this.btnLoadTemplates.Location = new System.Drawing.Point(12, 358);
             this.btnLoadTemplates.Name = "btnLoadTemplates";
@@ -399,7 +398,6 @@
             // 
             // btnCalculate1sect
             // 
-            this.btnCalculate1sect.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnCalculate1sect.Enabled = false;
             this.btnCalculate1sect.Location = new System.Drawing.Point(12, 387);
             this.btnCalculate1sect.Name = "btnCalculate1sect";
@@ -411,7 +409,6 @@
             // 
             // btnCheck
             // 
-            this.btnCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnCheck.Enabled = false;
             this.btnCheck.Location = new System.Drawing.Point(12, 445);
             this.btnCheck.Name = "btnCheck";
@@ -566,7 +563,6 @@
             // 
             // btnCalculate2sect
             // 
-            this.btnCalculate2sect.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnCalculate2sect.Enabled = false;
             this.btnCalculate2sect.Location = new System.Drawing.Point(12, 416);
             this.btnCalculate2sect.Name = "btnCalculate2sect";
